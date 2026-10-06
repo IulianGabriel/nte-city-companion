@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1791296903515,
+      "tag": "0000_account_sync",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1791314150673,
+      "tag": "0001_profile_xp",
+      "breakpoints": true
+    }
+  ]
+}

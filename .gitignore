@@ -1,0 +1,9 @@
+node_modules/
+.local/
+.env
+*.env
+*.log
+dist/
+.local-feed-check.json
+*.sqlite
+*.sqlite-journal

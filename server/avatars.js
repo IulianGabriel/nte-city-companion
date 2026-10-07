@@ -1,0 +1,3 @@
+// Profile images are capped at 65 KB after client-side resizing. D1 keeps the
+// free deployment independent of R2 billing activation.
+export function databaseAvatars(db){return {async put(key,bytes){const payload=btoa(String.fromCharCode(...bytes));if(payload.length>65000)throw Error('Photo too large');await db.prepare('INSERT INTO avatar_images(id,payload) VALUES (?,?)').bind(key,payload).run();},async get(key){const row=await db.prepare('SELECT payload FROM avatar_images WHERE id=?').bind(key).first();return row?{arrayBuffer:async()=>Uint8Array.from(atob(row.payload),c=>c.charCodeAt(0)).buffer}:null;},async delete(key){await db.prepare('DELETE FROM avatar_images WHERE id=?').bind(key).run();}};}

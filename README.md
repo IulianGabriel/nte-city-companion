@@ -1,45 +1,35 @@
 # NTE City Companion
 
-## Current status
-
-Spreadsheet refresh, daily checks while open, galleries, local saves, and JSON progress backup/import are implemented. Account-scoped cloud storage and platform sign-in are implemented and tested locally. **The site is not published: automatic approval rejected the publishing credential handoff. Real cross-device sign-in has not been verified and is not live.** No background daily schedule has been created.
+A responsive unofficial Neverness to Everness tracker using Buiuga's public spreadsheet. Includes reset countdowns, image guides, browser saves, profile photos and XP. Google sign-in connects private progress across devices using Cloudflare Workers and D1.
 
 ## Updating activities
 
-Keep the spreadsheet readable by anyone with its link. Add rows beneath the existing category headings, with the activity name in the activity column and an Imgur URL in Notes. Fixed row numbers are not used. Supported headings are Daily, Weekly, Bi-Weekly (or Biweekly), Monthly, Other Activities, and Ways to get Annulith & Fons.
+Keep the sheet publicly readable. Add rows beneath Daily, Weekly, Bi-Weekly, Monthly, Other Activities or Ways to get Annulith & Fons. Put guide URLs and notes in Notes. Fixed row numbers are not used. One-time labels override recurrence; recurring activities are excluded from the currency section. Spreadsheet Done cells never overwrite personal progress.
 
-Keep a guide URL unchanged when renaming or moving an activity. For activities without a guide, keep the name unchanged or assign a permanent `[id:my-activity]` tag in Notes. Two different activities that use one album should have distinct ID tags. One-time labels take precedence over recurrence, and Other Activities stay permanent. Recurring tasks are excluded from the currency section. The sheet's Done cells do not change anyone's personal checkboxes.
+Keep guide URLs unchanged when renaming or moving activities. For activities without guides, retain the name or add a permanent [id:my-activity] tag in Notes. Activities sharing an album need different ID tags. The app refreshes after 24 hours and offers Refresh sheet. The hosted Worker checks daily at 04:00 UTC. Failed reads preserve the last catalog.
 
-The app checks the sheet when opened if its last successful read is at least 24 hours old and checks for that condition every minute while open. Refresh sheet requests a manual update. Server reads within 30 seconds reuse the last successful result to avoid excessive Google requests. Malformed or unreachable sheets preserve the last working catalog. No service runs solely because the downloadable HTML is closed.
+## Accounts and progress
 
-## Storage and sign-in
+Google OAuth requests only openid, email and profile. It uses PKCE, short-lived state, verified Google ID tokens, hashed session tokens and secure HttpOnly cookies with a 30-day expiry. Account-scoped records, same-origin writes and revisions protect progress. Incoming identity headers are not trusted.
 
-The deployed Worker uses Sites' dispatch-owned Sign in with ChatGPT. It trusts only the authenticated user headers supplied by that boundary, never a client-submitted user ID. Each user has separate D1 progress and preferences. Writes require a same-origin request and an expected revision. Stale writes return the newer record rather than overwriting it. Unsynced checkbox changes are queued on the current device under that user's ID; sign in again with the same account to resume them. Different devices poll every 15 seconds and on focus/connection return. Server choice is saved explicitly for signed-in users so device timezone changes cannot switch their game server.
+Guests save in their browser. Sign in with the same Google account on each device to sync. Devices poll every 15 seconds and on focus or reconnection. Offline changes are queued for their account. Imports preserve existing completion records and retain higher XP totals instead of adding duplicate snapshots. Resized JPEG profile photos are stored privately in D1. See public/privacy.html.
 
-Progress import adds missing records only. Existing account records, including unchecked records, win. Reset periods are stored with completion, so expired recurring tasks appear unchecked after any missed reset without requiring a scheduled deletion job. One-time records retain their completion.
+Reset periods are stored with completion: expired recurring tasks become unchecked after missed resets; one-time completion remains. Browser timezone suggests a region, but users confirm their game server and schedule because location cannot identify an account's server.
 
-This app remains owner-private until the owner changes sharing. Public community use requires publishing and the desired Sites audience policy; adding sign-in does not itself grant public access.
+## XP
 
-## Development and build
+Awards: daily 10, weekly 40, every two weeks 90, monthly 160, racing season 200, one-time 220. Level L starts at 100*(L-1)*L total XP. Unchecking never removes XP or grants a second award. Recurring tasks earn again after their stored reset; schedule changes cannot accelerate awards. One-time awards remain locked to stable task IDs. Existing checked tasks do not receive retroactive XP.
 
-Use Node 24+. Run `npm ci`, `npm test`, `npm run build`, and `npm run dev`. Preview is at http://127.0.0.1:4174. The local server strips incoming authentication headers and does not pretend to be a cloud account. Local SQLite lives in ignored `.local/`. Tests use an in-memory SQLite adapter for D1.
+Guest clocks and imported backups are self-reported. This is a personal companion, not a competitive ranking system. Normal signed-in completion uses server time and the current catalog.
 
-The frontend source is in `public/`, the Worker in `server/worker.js`, schema in `db/schema.ts`, and generated migrations in `drizzle/`. `build.mjs` creates `dist/client`, a Worker at `dist/server/index.js`, and the Sites metadata. The asset binding is ASSETS; the logical database binding is DB. Do not run the Worker outside the trusted Sites authentication boundary without implementing equivalent authentication.
+## Development
 
-The initial migration was generated by Drizzle's programmatic API because its CLI's Windows user lookup failed in this environment. It is saved with its snapshot and journal; append future migrations without rewriting deployed migrations.
+Use Node 24+. Run npm ci, npm test, npm run build and npm run dev. Preview: http://127.0.0.1:4174. Tests use in-memory SQLite. Local data and credentials are ignored by Git. Source is in public/ and server/, schema in db/schema.ts and append-only migrations in drizzle/.
 
-## Publishing and optional closed-app refresh
+## Cloudflare hosted deployment
 
-Reuse project `appgprj_6ac4d2e2324c819195088a9c1736324d` in `.openai/hosting.json`. Use the standard Sites source-opening and publication workflow with the finished build. Credentials must stay in memory/stdin. Do not bypass the approval rejection or expose a publishing token in a file or command argument.
+Connect this repository using Workers Builds. Build command: npm run build && npm run db:migrate. Deploy command: npx wrangler deploy. Disable preview builds to prevent preview writes to production. Root wrangler.jsonc binds ASSETS and the dedicated D1 database and schedules daily refresh. Existing .openai metadata is legacy and is not used for Cloudflare publication.
 
-Once publication works, verify real sign-in and persistence on two devices. Then, if daily refresh while nobody has the app open is desired, verify an authorized service request to POST `/api/catalog/refresh` and read back `/api/catalog` before creating a daily schedule. The source is fixed to the provided public Google Sheet; routine refresh changes data, not site source. No additional Google account token is required for that public source.
+Set Worker secret bindings GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET. Create a Google web OAuth client with the exact production callback https://<worker-host>/auth/google/callback and publish its external audience for community users. Never commit secrets or deployment tokens. Sign-in remains unavailable until both bindings exist. Build authorization needs permission to apply D1 migrations.
 
-
-## Profile and XP
-Profile adds a resized 256px circular JPEG photo, 32-character display name and level progression. XP: daily 10, weekly 40, biweekly 90, monthly 160, racing season 200, one-time 220. Level L starts at 100*(L-1)*L total XP. New awards require a configured reset, a different period and reaching the previous award's stored next reset; one-time rewards remain locked for that stable task ID forever. Unchecking does not remove earned XP. Existing checked activities do not receive retroactive XP automatically.
-
-Guest state includes profile and per-task XP records in browser storage and version 3 backups. Web Locks serialize checkbox writes across tabs where supported. Accounts use D1 revisions and transactional XP writes. R2 binding AVATARS stores optimized profile photos, with account-isolated reads and immutable upload keys. Migration 0001 adds profiles and awards. Do not rewrite applied migrations.
-
-Backup imports retain each activity's higher lifetime XP and latest reward lock, never sum repeated snapshots. Divergent offline histories are not combined additively. Backups and guest clocks are self-reported; this is a personal companion, not a competitive or cheat-proof ranking system. Clearing browser data removes guest XP without a backup. Account XP is validated against server time and the catalog during ordinary task completion.
-
-Cloud publication remains blocked by the previously reported automatic approval rejection. The local preview and portable app work without an account; no live cloud sync is promised.
+This configuration targets Cloudflare's free plan, subject to its normal request, database and build limits. No billing account or paid storage service is required.

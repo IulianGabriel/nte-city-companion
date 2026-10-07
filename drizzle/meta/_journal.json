@@ -15,6 +15,13 @@
       "when": 1791314150673,
       "tag": "0001_profile_xp",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791362721532,
+      "tag": "0002_google_sessions",
+      "breakpoints": true
     }
   ]
 }

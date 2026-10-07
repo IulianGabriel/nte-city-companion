@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nte-city-companion",
+  "tsconfig": "tsconfig.json",
+  "main": "dist/server/index.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": "dist/client",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*",
+      "/auth/*"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nte-city-companion",
+      "database_id": "fba6c49d-a8b8-406a-b74a-d190549c796f",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "0 4 * * *"
+    ]
+  },
+  "observability": {
+    "enabled": false
+  },
+  "account_id": "9f0b3841e74dcb64c59a7aea66328451"
+}

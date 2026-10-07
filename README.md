@@ -2,6 +2,9 @@
 
 A responsive unofficial Neverness to Everness tracker using Buiuga's public spreadsheet. Includes reset countdowns, image guides, browser saves, profile photos and XP. Google sign-in connects private progress across devices using Cloudflare Workers and D1.
 
+Live app: https://nte-city-companion.neverness-to-everness.workers.dev/
+Google sign-in is published for external users. Sign-in, sign-out and retained account completion were verified on the live deployment on 7 October 2026.
+
 ## Updating activities
 
 Keep the sheet publicly readable. Add rows beneath Daily, Weekly, Bi-Weekly, Monthly, Other Activities or Ways to get Annulith & Fons. Put guide URLs and notes in Notes. Fixed row numbers are not used. One-time labels override recurrence; recurring activities are excluded from the currency section. Spreadsheet Done cells never overwrite personal progress.

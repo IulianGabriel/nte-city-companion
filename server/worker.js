@@ -18,7 +18,7 @@ export async function refreshCatalog(db,force=false){const old=await db.prepare(
 async function gallery(album){if(!/^[a-zA-Z0-9]{3,20}$/.test(album))return json({error:'Invalid album'},400);const response=await fetch(`https://imgur.com/a/${album}/embed?pub=true`,{signal:AbortSignal.timeout(15000)});if(!response.ok)throw Error('Guide unavailable');const html=await response.text(),match=html.match(/var images\s*=\s*([\s\S]*?),\s*albumHash/);if(!match)throw Error('No guide images found');const data=JSON.parse(match[1]);return json({guides:data.images.slice(0,100).filter(i=>/^[a-zA-Z0-9]+$/.test(i.hash)&&/^\.(png|jpe?g|webp|gif)$/.test(i.ext)).map(i=>({src:`/api/image/${i.hash}${i.ext}`,description:String(i.description||'').slice(0,10000)}))});}
 export default {async fetch(request,env,ctx){const url=new URL(request.url),path=url.pathname;
  if(env.DB&&!env.AVATARS)env={...env,AVATARS:databaseAvatars(env.DB)};
- if(path.startsWith('/auth/'))return authRoute(request,env);
+ if(path.startsWith('/auth/')){try{return await authRoute(request,env);}catch{return new Response('Sign-in is temporarily unavailable. Your saved progress is unchanged.',{status:503,headers:{'Cache-Control':'no-store'}});}}
  if(!path.startsWith('/api/'))return env.ASSETS.fetch(request);
  try{
   const who=await authenticatedUser(request,env);

@@ -1,11 +1,15 @@
 export const DAY=86400000;
-export const SERVERS={europe:{name:'Europe',offset:1},america:{name:'America',offset:-5},asia:{name:'Asia / HKTWMO',offset:8}};
+export const SERVERS={europe:{name:'Europe',offset:1},america:{name:'America',offset:-5},asia:{name:'Asia / HKTWMO',offset:8},china:{name:'China (mainland)',offset:8}};
+// Community-provided mainland schedule. Selecting it is explicit; timezone alone
+// cannot distinguish a mainland player from an international Asia player.
+export const CHINA_PRESET={resetTime:'05:00',weekDay:1,biAnchor:'2026-10-16',seasonAnchor:'2026-11-01',seasonResetTime:'00:00'};
 export function detectServer(zone=Intl.DateTimeFormat().resolvedOptions().timeZone,offset=-new Date().getTimezoneOffset()/60){if(/^(America|US|Canada)\//.test(zone))return 'america';if(/^(Asia|Australia|Pacific)\//.test(zone))return 'asia';if(/^(Europe|Africa)\//.test(zone))return 'europe';return offset<-2?'america':offset>=5?'asia':'europe';}
 export function serverOf(settings){return settings.server==='auto'?detectServer():settings.server;}
 export function boundary(cycle,settings,now=Date.now()){
  if(cycle==='once')return {key:'once',next:null};
  const server=SERVERS[serverOf(settings)]||SERVERS.europe;
- const [h,m]=settings.resetTime.split(':').map(Number);const shift=server.offset*3600000-(h*60+m)*60000;const shifted=new Date(now+shift);let start,next;
+ const resetTime=cycle==='season'?(settings.seasonResetTime||settings.resetTime):settings.resetTime;
+ const [h,m]=resetTime.split(':').map(Number);const shift=server.offset*3600000-(h*60+m)*60000;const shifted=new Date(now+shift);let start,next;
  if(cycle==='daily'){start=Date.UTC(shifted.getUTCFullYear(),shifted.getUTCMonth(),shifted.getUTCDate());next=start+DAY;}
  else if(cycle==='weekly'){start=Date.UTC(shifted.getUTCFullYear(),shifted.getUTCMonth(),shifted.getUTCDate())-((shifted.getUTCDay()-Number(settings.weekDay)+7)%7)*DAY;next=start+7*DAY;}
  else if(cycle==='monthly'){start=Date.UTC(shifted.getUTCFullYear(),shifted.getUTCMonth(),1);next=Date.UTC(shifted.getUTCFullYear(),shifted.getUTCMonth()+1,1);}

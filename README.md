@@ -5,6 +5,12 @@ A responsive unofficial Neverness to Everness tracker using Buiuga's public spre
 Live app: https://nte-city-companion.neverness-to-everness.workers.dev/
 Google sign-in is published for external users. Sign-in, sign-out and retained account completion were verified on the live deployment on 7 October 2026.
 
+## Languages and mainland China
+
+English and Simplified Chinese are selected independently of the game server. The browser's first preferred language suggests the initial language; a manual choice is saved locally and shared with other tabs. Interface copy and all current activities have Chinese translations in `public/locales/zh-CN.js`. New or renamed spreadsheet text falls back to English until its translation is added. Translations affect presentation only; task IDs, profile names, progress and XP remain unchanged. Imgur screenshots retain their original image text.
+
+The explicit China (mainland) option uses UTC+8. Choosing it in settings loads a community-reported preset: daily 05:00, Beyond the Rails October 16, 2026 at 05:00, and racing November 1, 2026 at 00:00. Weekly remains Monday and must be confirmed in-game. Saving is explicit; existing users are not migrated to this schedule. Racing can have its own reset time; leaving it blank preserves the legacy daily-clock behavior. Two-week and 60-day recurrence are unchanged.
+
 ## Updating activities
 
 Keep the sheet publicly readable. Add rows beneath Daily, Weekly, Bi-Weekly, Monthly, Other Activities or Ways to get Annulith & Fons. Put guide URLs and notes in Notes. Fixed row numbers are not used. One-time labels override recurrence; recurring activities are excluded from the currency section. Spreadsheet Done cells never overwrite personal progress.

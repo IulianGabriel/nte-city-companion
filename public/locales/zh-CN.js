@@ -4,6 +4,7 @@ export const ZH={
  'CITY COMPANION':'都市助手',
  'NEVERNESS TO EVERNESS':'异环 · NEVERNESS TO EVERNESS',
  'Profile':'个人档案','YOUR FIELD NOTES':'你的活动笔记','Language':'语言','Loading activities…':'正在加载活动…',
+ 'Activity categories':'活动分类','Your profile':'你的个人档案','Reset countdowns':'重置倒计时','XP':'经验',
  'Daily':'每日','Weekly':'每周','Every 2 weeks':'每两周','Monthly':'每月',
  'Other activities':'其他活动','Annulith & Fons':'环石与方斯','Annulith':'环石','Fons':'方斯',
  'Make today count':'让今天有所收获','The bigger picture':'每周稳步积累','Beyond the everyday':'探索日常之外',

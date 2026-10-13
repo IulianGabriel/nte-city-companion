@@ -16,6 +16,7 @@ export function translate(value,lang=language){
  let translated=ZH[text];
  if(translated===undefined){
   const rules=[
+   [/^Hit Citizens For Wallets \((\d+)x times per day\)$/,m=>'击打市民拾取钱包（每天'+m[1]+'次）'],
    [/^Complete (.+)$/,m=>'完成：'+translate(m[1],lang)],
    [/^View guide: (.+)$/,m=>'查看攻略：'+translate(m[1],lang)],
    [/^Preview (.+)$/,m=>'预览：'+translate(m[1],lang)],
@@ -33,6 +34,7 @@ export function translate(value,lang=language){
    [/^LEVEL (\d+)$/,m=>'等级 '+m[1]],
    [/^Progress to level (\d+)$/,m=>'升至 '+m[1]+' 级的进度'],
    [/^([\d,]+) XP to level (\d+)$/,m=>'距离 '+m[2]+' 级还需 '+m[1]+' 经验'],
+   [/^\/ ([\d,]+) XP$/,m=>'/ '+m[1]+' 经验'],
    [/^(\d+)d (\d{2}:\d{2}:\d{2})$/,m=>m[1]+'天 '+m[2]],
    [/^(.+) · local$/,m=>m[1]+' · 本地时间'],
    [/^(.+) · Auto$/,m=>translate(m[1],lang)+' · 自动'],

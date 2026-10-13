@@ -135,3 +135,4 @@ html[lang="zh-CN"] .task-title{line-height:1.65}
 html[lang="zh-CN"] .timer{letter-spacing:-.5px}
 @media(max-width:940px){.language-control{flex:1}.language-control select{width:100%}}
 @media(max-width:430px){.topbar-actions .server-button:last-child{grid-column:auto}.language-control select{width:100%}}
+@media(max-width:600px){.topbar-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.language-control select{width:100%}.topbar-actions .server-button:last-child{grid-column:auto}}

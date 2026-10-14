@@ -32,7 +32,7 @@ test('language preference is independent of server, reversible, and preserves un
  assert.equal(translate('Daily','zh-CN'),'每日');assert.equal(translate('Daily','en'),'Daily');
  assert.equal(translate(' A new future activity ','zh-CN'),' A new future activity ');
  assert.equal(translate('Complete Beyond The Rails','zh-CN'),'完成：轨外之境');
- assert.equal(translate('Hit Citizens For Wallets (4x times per day)','zh-CN'),'击打市民拾取钱包（每天4次）');
+ assert.equal(translate('Hit Citizens For Wallets (4x times per day)','zh-CN'),'抢劫市民钱包(每日4次)');
  assert.equal(translate('24d 12:30:00','zh-CN'),'24天 12:30:00');
 });
 

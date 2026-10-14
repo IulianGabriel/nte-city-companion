@@ -16,7 +16,7 @@ export function translate(value,lang=language){
  let translated=ZH[text];
  if(translated===undefined){
   const rules=[
-   [/^Hit Citizens For Wallets \((\d+)x times per day\)$/,m=>'击打市民拾取钱包（每天'+m[1]+'次）'],
+   [/^Hit Citizens For Wallets \((\d+)x times per day\)$/,m=>'抢劫市民钱包(每日'+m[1]+'次)'],
    [/^Complete (.+)$/,m=>'完成：'+translate(m[1],lang)],
    [/^View guide: (.+)$/,m=>'查看攻略：'+translate(m[1],lang)],
    [/^Preview (.+)$/,m=>'预览：'+translate(m[1],lang)],
